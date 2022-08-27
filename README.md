@@ -1,2 +1,2 @@
-# FlexGame
-FlexGame is a flexible game made with canvas in HTML5 and javascript applying flexibility to our code.
+# SkullsGame
+SkullsGame is a flexible game made with canvas in HTML5 and javascript applying flexibility to our code.
