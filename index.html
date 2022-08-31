@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./src/styles/main.css">
+    <title>KittyRun</title>
+</head>
+<body>
+    <div class="game-container">
+        <canvas id="game"></canvas>
+        <div class="info" id="game_info">
+            <p>
+                <span>Lives</span>
+                <span id="lives"></span>
+            </p>
+            <p>
+                <span>⏰Time</span>
+                <span id="time">0</span>
+            </p>
+            <p>
+                <span>🏁Score</span>
+                <span id="score"></span>
+            </p>
+        </div>
+
+        <div class="buttons">
+            <button class="button buttons__up" id="up">UP</button>
+            <button class="button buttons__left" id="left">LEFT</button>
+            <button class="button buttons__right" id="right">RIGHT</button>
+            <button class="button buttons__down" id="down">DOWN</button>
+        </div>
+    </div>
+
+    <script src="./src/scripts/maps.js"></script>
+    <script src="./src/scripts/game.js"></script>
+</body>
+</html>

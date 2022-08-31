@@ -1,0 +1,20 @@
+{
+  "name": "skullsgame",
+  "version": "1.0.0",
+  "description": "SkullsGame is a flexible game made with canvas in HTML5 and javascript applying flexibility to our code.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JohanDev115/SkullsGame.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/JohanDev115/SkullsGame/issues"
+  },
+  "homepage": "https://github.com/JohanDev115/SkullsGame#readme"
+}

@@ -1,0 +1,81 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+/* body {
+    
+} */
+
+.game-container {
+    width: 100%;
+    padding: 20px;
+    min-width: 320px;
+}
+
+canvas {
+    background-color: #23ce1d;
+    border: 4px solid rgb(83, 83, 226);
+    border-radius: 20px;
+    margin: 0 auto;
+    margin-bottom: 10px;
+    display: block;
+}
+
+.info {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    justify-items: start;
+    align-items: center;
+    margin: 0 auto;
+    color: black;
+    margin-bottom: 20px;
+}
+
+.info > p > span {
+    display: block;
+}
+
+.buttons {
+    width: 250px;
+    height: 200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+    column-gap: 10px;
+    row-gap: 5px;
+}
+
+.buttons__up {
+    grid-column: 2 / 3;
+    grid-row: 1 / 2;
+}
+
+.buttons__left {
+    grid-column: 1 / 2;
+    grid-row: 2 / 3;
+}
+
+.buttons__right {
+    grid-column: 3 / 4;
+    grid-row: 2 / 3;
+}
+
+.buttons__down {
+    grid-column: 2 / 3;
+    grid-row: 3 / 4;
+}
+
+button {
+    border: 2px solid #26799d;
+    /* background-color: #d6d6d6; */
+    /* color: ; */
+}
+
+@media (min-width: 1024px) {
+    .buttons {
+        display: none;
+    }
+}
