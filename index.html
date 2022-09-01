@@ -1,3 +1,4 @@
+<!--Music by <a href="https://pixabay.com/users/nojisuma-23737290/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=music&amp;utm_content=117254">nojisuma</a> from <a href="https://pixabay.com//?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=music&amp;utm_content=117254">Pixabay</a>-->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,12 +6,46 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./src/styles/main.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
     <title>KittyRun</title>
 </head>
 <body>
+    <audio loop id="gameMusic" src="././assets/music/game-music.mp3"></audio>
+    <div class="game-menu" id="game-menu">
+        <h1>KITTYRUN🐱‍🏍</h1>
+        <div class="menu-buttons">
+            <button class="playButton button menu-buttons__button">PLAY</button>
+            <button id="soundButton" class="button menu-buttons__button">SOUND: <span id="audio-state">OFF</span></button>
+        </div>
+        <p>
+            By ©JohanDev - 2022 <br>
+            <a href="https://johandev115.github.io/JohanDev115/index.html" target="_blank">See more projects</a> <br>
+            Music by <a href="https://pixabay.com/users/nojisuma-23737290/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=music&amp;utm_content=117254">nojisuma</a> from <a href="https://pixabay.com//?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=music&amp;utm_content=117254">Pixabay</a>
+        </p>
+    </div>
+    <div id="game-win" class="game-messages game-messages--win">
+        <h1>YOU WIN😸</h1>
+        <p id="new-record">NEW RECORD🙀</p>
+        <p>YOUR SCORE IS: <span class="final-score">0</span></p>
+        <div class="messages-buttons">
+            <button class="playButton button messages__button messages__button--win">PLAY AGAIN</button>
+            <button class="menuButton button messages__button messages__button--win">MENU</button>
+        </div>
+    </div>
+    <div id="game-lose" class="game-messages game-messages--lose">
+        <h1>YOU LOSE😿</h1>
+        <p>YOUR SCORE IS: <span class="final-score">0</span></p>
+        <div class="messages-buttons">
+            <button class="playButton button messages__button messages__button--lose">PLAY AGAIN</button>
+            <button class="menuButton button messages__button messages__button--lose">MENU</button>
+        </div>
+    </div>
     <div class="game-container">
+        <p class="level-indicator">Level <span id="level">1</span></p>
         <canvas id="game"></canvas>
-        <div class="info" id="game_info">
+        <div class="info" id="game-info">
             <p>
                 <span>Lives</span>
                 <span id="lives"></span>
@@ -25,11 +60,11 @@
             </p>
         </div>
 
-        <div class="buttons">
-            <button class="button buttons__up" id="up">UP</button>
-            <button class="button buttons__left" id="left">LEFT</button>
-            <button class="button buttons__right" id="right">RIGHT</button>
-            <button class="button buttons__down" id="down">DOWN</button>
+        <div class="control-buttons">
+            <button class="control-button control-buttons__up" id="up">UP</button>
+            <button class="control-button control-buttons__left" id="left">LEFT</button>
+            <button class="control-button control-buttons__right" id="right">RIGHT</button>
+            <button class="control-button control-buttons__down" id="down">DOWN</button>
         </div>
     </div>
 

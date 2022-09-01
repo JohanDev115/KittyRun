@@ -1,29 +1,55 @@
+/* main elements */
 const canvas = document.querySelector('#game');
 const game = canvas.getContext('2d');
-const gameInfo = document.querySelector('#game_info');
+const gameMenu = document.querySelector('#game-menu');
+const gameInfo = document.querySelector('#game-info');
+const GAME_WIN = document.querySelector('#game-win');
+const GAME_LOSE = document.querySelector('#game-lose');
 
+/* Buttons Events */
 const UP = document.querySelector('#up')
 const LEFT = document.querySelector('#left')
 const RIGHT = document.querySelector('#right')
 const DOWN = document.querySelector('#down')
 
+const PLAYBUTTONS = document.getElementsByClassName('playButton')
+const MENUBUTTONS = document.getElementsByClassName('menuButton')
+const FINALSCORES = document.getElementsByClassName('final-score')
+const SOUND_BUTTON = document.querySelector('#soundButton');
+
+/* Game information */
 const SPAN_LIVES = document.querySelector('#lives');
+const SPAN_LEVEL = document.querySelector('#level');
 const SPAN_TIME = document.querySelector('#time');
 const SPAN_SCORE = document.querySelector('#score');
+const NEW_RECORD = document.querySelector('#new-record');
 
-let canvasSize;
-let elementSize;
-let level = 0;
-let lives = 3;
+/* Game initial configurations */
+let canvasSize, elementSize, timeStart, level, lives, playerTime;
 
-let enemyTimerMovement;
-let enemySpeed = 500;
+/* Timers */
+let enemyTimerMovement, timeInterval;
 
-let timeStart;
-let timeInterval;
-
-window.addEventListener('load', adjustScreen);
+/* Window events */
 window.addEventListener('resize', adjustScreen);
+
+PLAYBUTTONS.item(0).addEventListener('click', startGame);
+
+const gameMusic = document.querySelector('#gameMusic');
+const audioState = document.querySelector('#audio-state');
+SOUND_BUTTON.addEventListener('click', manageMusic);
+
+function manageMusic() {
+    if (!gameMusic.paused) {
+        gameMusic.pause();
+        audioState.innerHTML = "OFF";
+    } else {
+        gameMusic.play();
+        audioState.innerHTML = "ON";
+    }
+}
+
+/* Characteres */
 
 const player = {
     posX: undefined,
@@ -46,6 +72,7 @@ const player = {
 const enemy = {
     posX: undefined,
     posY: undefined,
+    speed: 500,
     move() {
         game.fillText(emojis['E'], this.posX, this.posY);
     }
@@ -58,22 +85,69 @@ const fish = {
 
 let treePositions = [];
 
+/* game functions */
+
 function adjustScreen() {
     canvasSize = window.innerHeight > window.innerWidth 
     ? window.innerWidth * 0.8 
     : window.innerHeight * 0.8;
+
+    player.posX = undefined;
+    player.posY = undefined;
+    enemy.posX = undefined;
+    enemy.posY = undefined;
 
     canvas.setAttribute('width', canvasSize);
     canvas.setAttribute('height', canvasSize);
     gameInfo.style.width = canvasSize + 'px';
     
     elementSize = canvasSize / 10;
+}
 
-    startGame();
-    botMovements();
+function goToMenu() {
+    gameMenu.style.display = 'block';
+    GAME_LOSE.style.display = 'none';
+    GAME_WIN.style.display = 'none';
 }
 
 function startGame() {
+    adjustScreen();
+    resetAllGame();
+    botMovements();
+
+    gameMenu.style.display = 'none';
+    GAME_LOSE.style.display = 'none';
+    GAME_WIN.style.display = 'none';
+
+    UP.addEventListener('click', moveUp);
+    LEFT.addEventListener('click', moveLeft);
+    RIGHT.addEventListener('click', moveRight);
+    DOWN.addEventListener('click', moveDown);
+
+    window.addEventListener('keydown', moveByKeyboard);
+}
+
+function stopGame() {
+    clearInterval(enemyTimerMovement);
+    clearInterval(timeInterval);
+
+    UP.removeEventListener('click', moveUp);
+    LEFT.removeEventListener('click', moveLeft);
+    RIGHT.removeEventListener('click', moveRight);
+    DOWN.removeEventListener('click', moveDown);
+
+    window.removeEventListener('keydown', moveByKeyboard);
+
+    PLAYBUTTONS.item(1).addEventListener('click', startGame);
+    PLAYBUTTONS.item(2).addEventListener('click', startGame);
+
+    MENUBUTTONS.item(0).addEventListener('click', goToMenu);
+    MENUBUTTONS.item(1).addEventListener('click', goToMenu);
+
+    playerTime = Date.now() - timeStart;
+}
+
+function renderGame() {
     game.font = elementSize + 'px Monospace';
     game.textAlign = 'end';
 
@@ -84,10 +158,11 @@ function startGame() {
     if (!timeStart) {
         timeStart = Date.now();
         timeInterval = setInterval(showTime, 100);
-        showScore();
     }
 
     showLives();
+    showLevel();
+    showScore();
     
     treePositions = [];
     game.clearRect(0, 0, canvasSize, canvasSize);
@@ -136,47 +211,70 @@ function resetGame() {
     player.posY = undefined;
     enemy.posX = undefined;
     enemy.posY = undefined;
-    startGame();
+    renderGame();
+}
+
+function resetAllGame() {
+    level = 0;
+    lives = 3;
+    timeStart = undefined;
+    resetGame();
 }
 
 function levelWin() {
     if (level == maps.length - 1) {
-        console.log('There are not more maps');
-        clearInterval(enemyTimerMovement);
-        clearInterval(timeInterval);
-        const playerTime = Date.now() - timeStart;
-
-        const scoreTime = localStorage.getItem('score_time');
-        if (scoreTime) {
-            if (scoreTime >= playerTime) {
-                localStorage.setItem('score_time', playerTime);
-                console.log('score has been better');
-            }
-
-        } else {
-            localStorage.setItem('score_time', playerTime);
-        }
-
+        gameWin();
     } else {
         level++;
+        if (level > 5 && level < 10) enemy.speed = 450;
+        else if (level >= 10 && level < 15) enemy.speed = 400;
+        else if (level >= 15 && level < 18) enemy.speed = 350;
+        else enemy.speed = 300;
         resetGame();
     }
 }
 
 function levelFail() {
     lives--;
-
-    if (lives <= 0) {
-        level = 0;
-        lives = 3;
-        timeStart = undefined;
-    }
+    if (lives <= 0) gameLose();
     showLives();
     resetGame();
 }
 
+function gameWin() {
+    stopGame();
+    GAME_WIN.style.display = 'flex';
+    const scoreTime = localStorage.getItem('score_time');
+
+    if (scoreTime) {
+        if (scoreTime >= playerTime) {
+            localStorage.setItem('score_time', playerTime);
+            NEW_RECORD.style.display = "block";
+        }
+    
+    } else {
+        localStorage.setItem('score_time', playerTime);
+        NEW_RECORD.style.display = "none";
+    }
+
+    FINALSCORES.item(0).innerText = playerTime;
+}
+
+function gameLose() {
+    stopGame();
+    GAME_LOSE.style.display = 'flex';
+    FINALSCORES.item(1).innerText = playerTime;
+    // level = 0;
+    // lives = 3;
+    // timeStart = undefined;
+}
+
 function showLives() {
     SPAN_LIVES.innerText = emojis['HEART'].repeat(lives);
+}
+
+function showLevel() {
+    SPAN_LEVEL.innerText = level + 1;
 }
 
 function showTime() {
@@ -187,18 +285,7 @@ function showScore() {
     SPAN_SCORE.innerText = localStorage.getItem('score_time') || 0;
 }
 
-UP.addEventListener('click', moveUp);
-LEFT.addEventListener('click', moveLeft);
-RIGHT.addEventListener('click', moveRight);
-DOWN.addEventListener('click', moveDown);
-
-window.addEventListener('keydown', (evt) => {
-    evt.preventDefault();
-    if (evt.key == 'ArrowUp' || evt.key == 'w') moveUp();
-    else if (evt.key == 'ArrowLeft' || evt.key == 'a') moveLeft();
-    else if (evt.key == 'ArrowRight' || evt.key == 'd') moveRight();
-    else if (evt.key == 'ArrowDown' || evt.key == 's') moveDown();
-})
+/* Movements functions */
 
 function moveUp() {
     let cantMoveUp;
@@ -209,7 +296,7 @@ function moveUp() {
 
     if (!(player.posY <= elementSize) && !cantMoveUp) {
         player.posY -= elementSize;
-        startGame();
+        renderGame();
     }
 }
 
@@ -222,7 +309,7 @@ function moveLeft() {
 
     if (!(player.posX <= elementSize) && !cantMoveLeft) {
         player.posX -= elementSize;
-        startGame();
+        renderGame();
     }
 }
 
@@ -235,7 +322,7 @@ function moveRight() {
 
     if (!(player.posX >= canvasSize) && !cantMoveRight) {
         player.posX += elementSize;
-        startGame();
+        renderGame();
     }
 }
 
@@ -248,8 +335,16 @@ function moveDown() {
 
     if (!(player.posY >= canvasSize) && !cantMoveDown) {
         player.posY += elementSize;
-        startGame();
+        renderGame();
     }
+}
+
+function moveByKeyboard(evt) {
+    evt.preventDefault();
+    if (evt.key == 'ArrowUp' || evt.key == 'w') moveUp();
+    else if (evt.key == 'ArrowLeft' || evt.key == 'a') moveLeft();
+    else if (evt.key == 'ArrowRight' || evt.key == 'd') moveRight();
+    else if (evt.key == 'ArrowDown' || evt.key == 's') moveDown();
 }
 
 function botMovements() {
@@ -312,8 +407,8 @@ function botMovements() {
             chooseDirection();
         }
         
-        startGame();
+        renderGame();
     }
 
-    enemyTimerMovement = setInterval(moveEnemy, enemySpeed);
+    enemyTimerMovement = setInterval(moveEnemy, enemy.speed);
 }
